@@ -16,7 +16,6 @@ options = []
 
 for i in range (0, 4):
 	name = '%c: ' % (65 + i,)
-	print name
 	hbox = gtk.HBox ()
 	hbox.add (gtk.Label (name))
 	hbox.add (gtk.Entry ())
@@ -31,5 +30,7 @@ fixed.put (options[2], 120, 300)
 fixed.put (options[3], 348, 300)
 fixed.put (question, 110, 190)
 
+w.connect('destroy', gtk.main_quit)
 w.show_all ()
+
 gtk.main ()
