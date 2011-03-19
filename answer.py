@@ -112,15 +112,15 @@ def estimate_scores(question, choices):
 #odpovede = ["Cina", "Rusko", "Kanada", "Slovensko"]
 
 
-otazka=raw_input("Zadaj svoju otazku:")
-print "zadaj svoje odpovede kazdu na riadok, za poslednou daj enter"
-odpovede = []
-while True:
-  odp=raw_input("Zadaj odpoved:")
-  if odp:
-    odpovede.append(odp)
-  else:
-    break;
+#otazka=raw_input("Zadaj svoju otazku:")
+#print "zadaj svoje odpovede kazdu na riadok, za poslednou daj enter"
+#odpovede = []
+#while True:
+#  odp=raw_input("Zadaj odpoved:")
+#  if odp:
+#    odpovede.append(odp)
+#  else:
+#    break;
 
 def vyhodnot(data):
   res = []
@@ -134,11 +134,5 @@ def vyhodnot(data):
   for x in res:
     print "-----------------"
     print x[2], x[0], x[1]
+  return res
 
-
-otazka_transl = translate(otazka);
-odp_transl = {}
-for odp in odpovede:
-    odp_transl[odp] = translate(odp)
-
-vyhodnot(estimate_scores(otazka_transl, odp_transl));
