@@ -8,8 +8,8 @@ def man_vs_machine(otazka, odpovede):
         odp_transl[odp] = answer.translate(odp)
 
     res = answer.vyhodnot(answer.estimate_scores(otazka_transl, odp_transl));
-    if (res[0][0] < 1.0):
-        return None 
+    #if (res[0][0] < 1.0):
+    #    return None 
     return res[0][2]
 """
 print man_vs_machine("Kto je autorom knihy hobit?",
