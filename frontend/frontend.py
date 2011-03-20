@@ -25,12 +25,19 @@ def show_answer ():
 	#	pass
 
 def jabber_thread (q, a):
-	download_speech ('cs', q, '/tmp/question')
-	all_files = ['/tmp/question' ]
+	all_files = []
+	try:
+		download_speech ('cs', q, '/tmp/question')
+		all_files += ['/tmp/question' ]
+	except:
+		pass
 
 	for i in range (0, len(a)):
-		download_speech ('cs', "Po " + chr(ord('A')+i)+', '+a[i], '/tmp/answer%d' % i)
-		all_files += [ "/tmp/answer%d" %i ]
+		try:
+			download_speech ('cs', "Po " + chr(ord('A')+i)+', '+a[i], '/tmp/answer%d' % i)
+			all_files += [ "/tmp/answer%d" %i ]
+		except:
+			pass
 	
 	for i in all_files:
 		play_speech (i, wait = True)
@@ -75,7 +82,10 @@ def lookup_thread (question,  options):
 		answer = "Oook!"
 	
 	if answer is not None:
-		download_speech ("cs", answer, '/tmp/answer')
+		try:
+			download_speech ("cs", answer, '/tmp/answer')
+		except:
+			pass
 	gobject.idle_add (show_waiting, answer)
 
 def clicked (data):
