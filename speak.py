@@ -22,9 +22,10 @@ def download_speech(lang, text, filename):
 def play_speech(filename):
   os.system("mplayer '%s'" % filename)
 
+"""
 download_speech('sk', "Najvyšším vrchom Južnej Ameriky je:", "/tmp/question.mp3");
 download_speech('sk', "a, Ojos del Salado", "/tmp/answer_a.mp3");
 
 play_speech("/tmp/question.mp3");
 play_speech("/tmp/answer_a.mp3");
-
+"""
