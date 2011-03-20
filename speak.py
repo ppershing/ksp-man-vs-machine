@@ -8,7 +8,7 @@ import os
 class MyOpener(urllib.URLopener):
   version = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; it; rv:1.8.1.11) Gecko/20071127 Firefox/2.0.0.11'
 
-def download_speach(lang, text, filename):
+def download_speech(lang, text, filename):
   print "Fetching speach..."
   text = re.sub(' +', ', ', text)
   baseUrl = "http://translate.google.com/translate_tts?"
@@ -19,7 +19,7 @@ def download_speach(lang, text, filename):
   print "Done"
 
 
-def play_speach(filename):
+def play_speech(filename):
   os.system("mplayer '%s'" % filename)
 
 download_speach('sk', "Najvyšším vrchom Južnej Ameriky je:", "/tmp/question.mp3");
