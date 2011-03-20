@@ -16,6 +16,7 @@ class MyOpener(urllib.FancyURLopener):
 #
 #Read more: http://www.halotis.com/2009/09/15/google-translate-api-python-script/#ixzz1FSJPg1Q6 
 def translate(text):
+  print text;
   src = 'sk';
   to = 'en';
   params = ({'langpair' : '%s|%s' % (src, to), 'v': '1.0', 'q' : text})
@@ -26,6 +27,7 @@ def translate(text):
 
 ## Fetch results from google search api
 def fetch_results(query):
+  print "Fetch Results", query
   query = urllib.urlencode({'q' : query})
   url = 'http://ajax.googleapis.com/ajax/services/search/web?v=1.0&%s' % (query)
   search_results = urllib.urlopen(url)
@@ -83,12 +85,14 @@ def estimate_scores(question, choices):
   ## Estimate metrics for original query result pages
   for i in results_orig['results']:
     try:
+      print "Result : ", i['url']
       for line in urllib.urlopen(i['url']):
         for choice in choices:
           choiceEN = choices[choice]
           if line.find(choiceEN) != -1:
             signals[choice]['in_results_count'] += 1;
     except:
+      print "Failed fetching", i['url']
       pass
 
   return signals
