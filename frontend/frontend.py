@@ -1,19 +1,105 @@
 #!/usr/bin/python
+#encoding: utf-8
 import os
 import gtk
+import sys
 import gtk.gdk
 import glib
+import gobject
+import threading
+
+sys.path.append('..')
+from oracle import *
+from speak import *
+
+(DEFAULT, SEARCHING, WAITING, RESULT) = range (0,4)
+search_in_progress = 0
+
+def show_answer ():
+	set_state (RESULT)
+	#try:
+	print "playing"
+	play_speech ('/tmp/answer')
+	print 'done'
+	#except:
+	#	pass
+
+def jabber_thread (q, a):
+	download_speech ('cs', q, '/tmp/question')
+	all_files = ['/tmp/question' ]
+
+	for i in range (0, len(a)):
+		download_speech ('cs', "Po " + chr(ord('A')+i)+', '+a[i], '/tmp/answer%d' % i)
+		all_files += [ "/tmp/answer%d" %i ]
+	
+	for i in all_files:
+		play_speech (i, wait = True)
+	
+
+
+def show_waiting (answer):
+	print answer
+	if answer is None:
+		answer = "Oook?"
+	answer_label.set_text (answer)
+	set_state (WAITING)
+
+def reset_gui ():
+	answer_label.hide ()
+	answer_img.hide ()
+	thinking_img.hide ()
+
+def set_state (state):
+	if state == RESULT:
+
+		#answer_label.show ()
+		answer_evbox.show_all ()
+	else:
+		#answer_label.hide ()
+		answer_evbox.hide_all ()
+
+	if state == WAITING: waiting.show_all ()
+	else: waiting.hide_all ()
+
+	if state == SEARCHING: thinking_img.show () 
+	else: thinking_img.hide ()
+
+def lookup_thread (question,  options):
+	try:
+		answer = man_vs_machine (question, options)
+		if answer is None:
+			answer = "Oook?"
+
+	except Exception as e:
+		print e
+		answer = "Oook!"
+	
+	if answer is not None:
+		download_speech ("cs", answer, '/tmp/answer')
+	gobject.idle_add (show_waiting, answer)
 
 def clicked (data):
-	(stdin, stdout) = os.popen2 ('../answer.py')
-	stdin.write (question.get_text () + '\n')
-	for a in answers:
-		stdin.write (a.get_text () + '\n')
-	stdin.write ('\n')
-	stdin.flush ()
-	print stdout.readlines ()
+	global search_in_progress
+	set_state (SEARCHING)
+	q = question.get_text ()
+	a = map(lambda x: x.get_text(), answers)
+	if not (search_in_progress == 1):
+		search_in_progress = 0
+		threading.Thread(target = lookup_thread, args = (q, a)).start ()
+		threading.Thread(target = jabber_thread, args = (q, a)).start ()
 
-background_pixbuf = gtk.gdk.pixbuf_new_from_file('images/background.png')
+def waiting_clicked (sender, event_data):
+	show_answer ()
+
+def answer_clicked (sender, event_data):
+	question.set_text ('')
+	for i in answers:
+		i.set_text ('')
+	set_state (DEFAULT)
+
+
+gtk.threads_init ()
+background_pixbuf = gtk.gdk.pixbuf_new_from_file('images/background2.png')
 gtk.rc_parse ('mvsm.gtkrc')
 
 img = gtk.Image ()
@@ -36,7 +122,8 @@ for i in range (0, 4):
 
 question = gtk.Entry ()
 question.set_width_chars (52)
-name = gtk.Label ('      Steve      ')
+#name = gtk.Label ('      Steve      ')
+name = gtk.Label ('Micro Weaver     ')
 
 fixed.put (img, 0, 0)
 fixed.put (options[0], 120, 258)
@@ -59,11 +146,45 @@ ack_im.set_from_file ('images/yes.png')
 ack.set_relief (gtk.RELIEF_NONE)
 #ack.set_size_request (100, -1)
 ack.set_image (ack_im)
-fixed.put (ack, 335, 345)
-
+fixed.put (ack, 333, 343)
 ack.connect ('clicked', clicked)
+
+
+# Thinking icon
+thinking_img = gtk.Image ()
+animation = gtk.gdk.PixbufAnimation ('images/Blue_bulb.gif')
+thinking_img.set_from_animation (animation)
+fixed.put (thinking_img, (640-56)/2, 70)
+
+
+# "Show answer" button
+waiting = gtk.EventBox ()
+waiting.set_visible_window (False)
+waiting_img = gtk.Image ()
+waiting_img.set_from_file ('images/Blue_bulb-done2.gif')
+waiting.add (waiting_img)
+fixed.put (waiting, (640-56)/2, 70)
+waiting.connect ('button-press-event', waiting_clicked)
+
+
+# correct answer
+answer_evbox = gtk.EventBox ()
+answer_fixed = gtk.Fixed ()
+answer_img = gtk.Image()
+answer_img.set_from_file('images/answer.png')
+answer_evbox.add (answer_fixed)
+answer_fixed.put (answer_img, 0, 0)
+answer_label = gtk.Label ()
+answer_label.set_text ('kalerab')
+answer_label.modify_fg (gtk.STATE_NORMAL, gtk.gdk.color_parse ('black'))
+answer_fixed.put (answer_label, 25, 12)
+
+fixed.put (answer_evbox, (640-234)/2, 110)
+answer_evbox.connect('button-press-event', answer_clicked)
+
 
 w.connect('destroy', gtk.main_quit)
 w.show_all ()
 
+set_state (DEFAULT)
 gtk.main ()

@@ -10,7 +10,7 @@ class MyOpener(urllib.URLopener):
 
 def download_speech(lang, text, filename):
   print "Fetching speach..."
-  text = re.sub(' +', ', ', text)
+  #text = re.sub(' +', ', ', text)
   baseUrl = "http://translate.google.com/translate_tts?"
   params = ({'tl' : lang, 'q' : text})
   os.system("rm '%s'" %filename);
@@ -19,8 +19,11 @@ def download_speech(lang, text, filename):
   print "Done"
 
 
-def play_speech(filename):
-  os.system("mplayer '%s'" % filename)
+def play_speech(filename, wait = False):
+  if wait:
+    os.system("mplayer '%s' 2>&1 >/dev/null" % filename)
+  else:
+    os.system("mplayer '%s' 2>&1 >/dev/null &" % filename)
 
 """
 download_speech('sk', "Najvyšším vrchom Južnej Ameriky je:", "/tmp/question.mp3");
