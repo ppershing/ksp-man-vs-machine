@@ -26,19 +26,27 @@ def show_answer ():
 
 def jabber_thread (q, a):
 	all_files = []
+	threads = []
 	try:
-		download_speech ('cs', q, '/tmp/question')
+		threads += [threading.Thread (target = download_speech, args =
+			('cs', q, '/tmp/question'))]
 		all_files += ['/tmp/question' ]
 	except:
 		pass
 
 	for i in range (0, len(a)):
 		try:
-			download_speech ('cs', "Po " + chr(ord('A')+i)+', '+a[i], '/tmp/answer%d' % i)
+			threads += [threading.Thread (target = download_speech, args = ('cs',				"Po " + chr(ord('A')+i)+', '+a[i],
+				'/tmp/answer%d' % i))]
 			all_files += [ "/tmp/answer%d" %i ]
 		except:
 			pass
-	
+	for t in threads:
+		t.start ()
+
+	for t in threads:
+		t.join ()
+
 	for i in all_files:
 		play_speech (i, wait = True)
 	
@@ -195,6 +203,6 @@ answer_evbox.connect('button-press-event', answer_clicked)
 
 w.connect('destroy', gtk.main_quit)
 w.show_all ()
-
+w.fullscreen ()
 set_state (DEFAULT)
 gtk.main ()
