@@ -1,0 +1,147 @@
+# 
+# Dark theme for UFRAW
+#
+# Just copy this file to ~/.mvsm-gtkrc
+#
+# Remarks:
+#    - the style names are all prefixed by "mvsm-" not because
+#      this is required by UFRAW but to avoid conflicts with the
+#      styles defined in the default GTK theme.
+#     
+#
+
+style "mvsm-default"
+{
+
+  GtkButton::default_border         = { 1, 1, 1, 1 }
+  GtkButton::default_outside_border = { 0, 0, 0, 0 }
+
+  GtkScrollbar::min_slider_length = 30
+
+  GtkCheckButton::indicator_size = 14
+
+  GtkTreeView::expander_size = 14
+
+  GtkExpander::expander_size    = 16
+  GtkExpander::expander_spacing = 0
+
+  xthickness = 1
+  ythickness = 1
+
+  # bigger font
+
+  font_name = "DejaVu 10"
+
+  # A pair of dark background and light text color 
+  color["fg1"]    = "#FFFFFF"
+  color["bg1"]    = "#000000"
+ 
+  # Another pair slighly darker
+  color["fg2"]    = shade(0.75,@fg1)
+  color["bg2"]    = shade(0.75,@bg1)
+
+  # Another pair for the text areas
+  color["fg3"]    = "#FFFFFF"
+  color["bg3"]    = "#000000"
+
+  # A few colors 
+  color["col1"]   = "#A0A000"   
+  color["col2"]   = "#F0C070"
+  color["col3"]   = "#F0F000"
+
+  fg[NORMAL]        = @fg2
+  fg[ACTIVE]        = @fg1
+  fg[INSENSITIVE]   = "#000000"
+  fg[PRELIGHT]      = @col2        
+  fg[SELECTED]      = @fg1 
+
+  bg[ACTIVE]        = @bg2
+  bg[NORMAL]        = @bg1
+  bg[INSENSITIVE]   = @bg2
+  bg[PRELIGHT]      = @bg2
+  bg[SELECTED]      = @col1       
+
+  #
+  # Those are for the text entries
+  # 
+
+  base[NORMAL]      = @bg3          # Regular background
+  base[ACTIVE]      = "#800000"     # Selected background 
+  base[INSENSITIVE] = darker(@bg3)  #
+  base[PRELIGHT]    = "red"         # Unused?
+  base[SELECTED]    = "#800000"     # Selected background
+
+  text[NORMAL]      = @fg3          # Regular text
+  text[ACTIVE]      = "#FFFFFF"     # Selected text  
+  text[INSENSITIVE] = "#000000"     #
+  text[PRELIGHT]    = "blue"        # Unused?
+  text[SELECTED]    = "#FFFFFF"     # Selected text
+
+  
+  # Background colors in Exif pane and file selector
+  GtkTreeView::even-row-color = @bg1
+  GtkTreeView::odd-row-color  = @bg2
+
+  
+  engine "clearlooks"
+  {
+    contrast		= 1.2   
+    animation           = TRUE
+    style		= CLASSIC 
+  # radius              = 3.0            # rounded corners
+  # colorize_scrollbar  = TRUE
+  # scrollbar_color     = shade(1.1,@bg1)
+
+  }
+}
+
+style "mvsm-button" = "mvsm-default"
+{
+  xthickness = 0
+  ythickness = 0
+}
+
+style "mvsm-frame" = "mvsm-default"
+{
+  xthickness = 3
+  ythickness = 3
+}
+
+style "mvsm-menu-item" = "mvsm-default"
+{
+  xthickness = 2
+  ythickness = 1
+}
+
+style "mvsm-progress-bar" = "mvsm-default"
+{
+  xthickness = 0
+  ythickness = 0
+
+  # colors when not running
+  fg[NORMAL]        = @fg1  
+  bg[NORMAL]        = @bg1  
+
+  # colors when running
+  fg[PRELIGHT]      = "#000000" 
+  bg[SELECTED]      = @col1
+}
+
+style "mvsm-combo" = "mvsm-default"
+{
+  xthickness = 1
+  ythickness = 2
+
+  text[NORMAL]      = @fg2  # normal
+  text[PRELIGHT]    = @col3 # text when mouse over  
+}
+
+class "GtkWidget"                         style "mvsm-default"
+class "GtkButton"                         style "mvsm-button"
+class "GtkFrame"                          style "mvsm-frame"
+class "GtkMenuItem"                       style "mvsm-menu-item"
+class "GtkProgressBar"                    style "mvsm-progress-bar"
+
+widget_class "*.GtkComboBox.*"            style "mvsm-combo"
+
+
