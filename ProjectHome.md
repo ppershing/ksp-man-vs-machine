@@ -1,0 +1,1 @@
+"Intelligent" machine which can answer quiz questions, written specially for KSP camp Klacno 2011.
